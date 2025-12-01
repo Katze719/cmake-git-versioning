@@ -1,10 +1,8 @@
-#ifndef VERSION_HPP
-#define VERSION_HPP
-#pragma once
+module version;
 
-#include <string>
+import <string>;
 
-namespace version {
+export namespace version {
 // Version numbers
 inline constexpr int MAJOR = @GIT_VERSION_MAJOR@;
 inline constexpr int MINOR = @GIT_VERSION_MINOR@;
@@ -20,10 +18,10 @@ inline constexpr const char *GIT_BRANCH = "@GIT_BRANCH@";
 inline constexpr const char *GIT_COMMIT_DATE = "@GIT_COMMIT_DATE@";
 
 // Helper function to get version string
-inline std::string getVersionString() { return std::string(VERSION); }
+export inline std::string getVersionString() { return std::string(VERSION); }
 
 // Helper function to get full version info
-inline std::string getFullVersionInfo() {
+export inline std::string getFullVersionInfo() {
   return std::string("v") + std::to_string(MAJOR) + "." +
          std::to_string(MINOR) + "." + std::to_string(PATCH) + " (" +
          std::string(GIT_BRANCH) + "@" + std::string(GIT_COMMIT_HASH_SHORT) +
@@ -31,4 +29,3 @@ inline std::string getFullVersionInfo() {
 }
 } // namespace version
 
-#endif // VERSION_HPP

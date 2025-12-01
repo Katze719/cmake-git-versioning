@@ -5,7 +5,7 @@ A CMake module for automatically generating version information from Git for C++
 ## Features
 
 - Automatic extraction of version information from Git
-- Support for C++ (`version.hpp`) and C (`version.h`)
+- Support for C++ headers (`version.hpp`), C++20 modules (`version.cppm`), and C (`version.h`)
 - Easy integration via CPM (CMake Package Manager)
 - Extracts: Version, Commit Hash, Branch, Commit Date
 
@@ -39,6 +39,23 @@ target_include_directories(your_target PRIVATE ${CMAKE_BINARY_DIR}/generated)
 
 # Use in your code:
 # #include "version.hpp"
+# std::cout << version::VERSION << std::endl;
+```
+
+### For C++20 Modules
+
+```cmake
+# After CPMAddPackage
+include(cmake/cmake-git-versioning.cmake)
+
+# Generate version.cppm with CXX_MODULE option
+generate_git_version(CXX_MODULE)
+
+# Add the generated directory to module search paths
+target_sources(your_target PRIVATE ${CMAKE_BINARY_DIR}/generated/version.cppm)
+
+# Use in your code:
+# import version;
 # std::cout << version::VERSION << std::endl;
 ```
 
@@ -118,7 +135,7 @@ Note: `generate_git_version()` automatically calls `get_git_version_info()`, so 
 
 ## Generated Information
 
-### C++ (version.hpp)
+### C++ Header (version.hpp)
 
 - `version::MAJOR`, `version::MINOR`, `version::PATCH` - Version numbers as `inline constexpr int`
 - `version::VERSION` - Full version string (e.g., "v1.2.3" or "v1.2.3-5-gabc1234")
@@ -128,6 +145,17 @@ Note: `generate_git_version()` automatically calls `get_git_version_info()`, so 
 - `version::GIT_COMMIT_DATE` - Commit date
 - `version::getVersionString()` - Helper function for version string
 - `version::getFullVersionInfo()` - Helper function for full version info
+
+### C++20 Module (version.cppm)
+
+- `version::MAJOR`, `version::MINOR`, `version::PATCH` - Version numbers as `inline constexpr int`
+- `version::VERSION` - Full version string (e.g., "v1.2.3" or "v1.2.3-5-gabc1234")
+- `version::GIT_COMMIT_HASH_SHORT` - Short commit hash
+- `version::GIT_COMMIT_HASH_FULL` - Full commit hash
+- `version::GIT_BRANCH` - Current branch name
+- `version::GIT_COMMIT_DATE` - Commit date
+- `version::getVersionString()` - Exported helper function for version string
+- `version::getFullVersionInfo()` - Exported helper function for full version info
 
 ### C (version.h)
 
@@ -140,11 +168,25 @@ Note: `generate_git_version()` automatically calls `get_git_version_info()`, so 
 
 ## Examples
 
-### C++ Example
+### C++ Header Example
 
 ```cpp
 #include "version.hpp"
 #include <iostream>
+
+int main() {
+    std::cout << "Version: " << version::VERSION << std::endl;
+    std::cout << "Full Info: " << version::getFullVersionInfo() << std::endl;
+    std::cout << "Commit: " << version::GIT_COMMIT_HASH_SHORT << std::endl;
+    return 0;
+}
+```
+
+### C++20 Module Example
+
+```cpp
+import version;
+import <iostream>;
 
 int main() {
     std::cout << "Version: " << version::VERSION << std::endl;
@@ -171,9 +213,12 @@ int main() {
 
 ## Requirements
 
-- CMake 3.10 or higher
+- CMake 3.10 or higher (3.28+ recommended for full C++20 module support)
 - Git (for version generation)
 - CPM
+
+**Optional requirements:**
+- C++20 compatible compiler (only required if using `CXX_MODULE` option)
 
 ## License
 
