@@ -1,0 +1,27 @@
+#ifndef VERSION_H
+#define VERSION_H
+#pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// Version numbers
+#define VERSION_MAJOR @GIT_VERSION_MAJOR @
+#define VERSION_MINOR @GIT_VERSION_MINOR @
+#define VERSION_PATCH @GIT_VERSION_PATCH @
+
+// Version string
+#define VERSION_STRING "@GIT_DESCRIBE@"
+
+// Git information
+#define GIT_COMMIT_HASH_SHORT "@GIT_COMMIT_HASH_SHORT@"
+#define GIT_COMMIT_HASH_FULL "@GIT_COMMIT_HASH_FULL@"
+#define GIT_BRANCH "@GIT_BRANCH@"
+#define GIT_COMMIT_DATE "@GIT_COMMIT_DATE@"
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // VERSION_H
