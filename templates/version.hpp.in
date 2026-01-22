@@ -10,6 +10,11 @@ inline constexpr int MAJOR = @GIT_VERSION_MAJOR@;
 inline constexpr int MINOR = @GIT_VERSION_MINOR@;
 inline constexpr int PATCH = @GIT_VERSION_PATCH@;
 
+// Pre-release information (empty string if not a pre-release)
+inline constexpr const char *PRERELEASE = "@GIT_VERSION_PRERELEASE@";
+inline constexpr const char *PRERELEASE_TYPE = "@GIT_VERSION_PRERELEASE_TYPE@";
+inline constexpr const char *PRERELEASE_NUMBER = "@GIT_VERSION_PRERELEASE_NUMBER@";
+
 // Version string
 inline constexpr const char *VERSION = "@GIT_DESCRIBE@";
 
@@ -26,7 +31,7 @@ inline constexpr const char *GIT_DESCRIBE_TAG = "@GIT_DESCRIBE_TAG@";
 inline constexpr const char *GIT_DESCRIBE_TAG_NO_V = "@GIT_DESCRIBE_TAG_NO_V@";
 inline constexpr int GIT_COMMIT_COUNT = @GIT_COMMIT_COUNT@;
 inline constexpr const char *GIT_DESCRIBE_HASH = "@GIT_DESCRIBE_HASH@";
-inline constexpr bool GIT_IS_DIRTY = (@GIT_IS_DIRTY@);
+inline constexpr bool GIT_IS_DIRTY = @GIT_IS_DIRTY@;
 inline constexpr const char *GIT_DIRTY_SUFFIX = "@GIT_DIRTY_SUFFIX@";
 
 // Helper function to get version string

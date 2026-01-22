@@ -66,7 +66,8 @@ function(get_git_version_info)
         endif()
 
         # Extract components from git describe
-        # Format: v1.2.3 or v1.2.3-5-gabc1234 or v1.2.3-5-gabc1234-dirty
+        # Format: v1.2.3, v1.2.3-alpha.1, v1.2.3-5-gabc1234, v1.2.3-alpha.1-5-gabc1234-dirty
+        # Pattern: tag (optional: -commitcount-g-hash) (optional: -dirty)
         if(GIT_DESCRIBE MATCHES "^(.+?)(-([0-9]+)-g([a-f0-9]+))?(-dirty)?$")
             set(GIT_DESCRIBE_TAG "${CMAKE_MATCH_1}")
             if(CMAKE_MATCH_3)
@@ -118,19 +119,43 @@ function(get_git_version_info)
             ERROR_QUIET
         )
 
-        # Try to extract version from git describe or tag
-        if(GIT_DESCRIBE MATCHES "^v?([0-9]+)\\.([0-9]+)\\.([0-9]+)")
+        # Try to extract version from git describe tag or tag
+        # Support formats: v1.2.3, v1.2.3-alpha.1, v1.2.3-beta.2, v1.2.3-rc.1, etc.
+        # First try from GIT_DESCRIBE_TAG (which may include pre-release), then from GIT_TAG_NO_V
+        set(VERSION_SOURCE "${GIT_DESCRIBE_TAG_NO_V}")
+        if(NOT VERSION_SOURCE OR VERSION_SOURCE STREQUAL "unknown")
+            set(VERSION_SOURCE "${GIT_TAG_NO_V}")
+        endif()
+
+        # Pattern: v?1.2.3 or v?1.2.3-alpha.1 or v?1.2.3-beta.2, etc.
+        # The pre-release part can contain letters, numbers, dots, and hyphens
+        if(VERSION_SOURCE MATCHES "^v?([0-9]+)\\.([0-9]+)\\.([0-9]+)(-([a-zA-Z0-9.-]+))?$")
             set(GIT_VERSION_MAJOR "${CMAKE_MATCH_1}")
             set(GIT_VERSION_MINOR "${CMAKE_MATCH_2}")
             set(GIT_VERSION_PATCH "${CMAKE_MATCH_3}")
-        elseif(GIT_TAG_NO_V MATCHES "^([0-9]+)\\.([0-9]+)\\.([0-9]+)")
-            set(GIT_VERSION_MAJOR "${CMAKE_MATCH_1}")
-            set(GIT_VERSION_MINOR "${CMAKE_MATCH_2}")
-            set(GIT_VERSION_PATCH "${CMAKE_MATCH_3}")
+            if(CMAKE_MATCH_5)
+                set(GIT_VERSION_PRERELEASE "${CMAKE_MATCH_5}")
+                # Try to extract prerelease type and number (e.g., "alpha.1" -> "alpha" and "1")
+                if(GIT_VERSION_PRERELEASE MATCHES "^([a-zA-Z]+)\\.([0-9]+)$")
+                    set(GIT_VERSION_PRERELEASE_TYPE "${CMAKE_MATCH_1}")
+                    set(GIT_VERSION_PRERELEASE_NUMBER "${CMAKE_MATCH_2}")
+                else()
+                    # If it doesn't match the pattern, use the whole string as type
+                    set(GIT_VERSION_PRERELEASE_TYPE "${GIT_VERSION_PRERELEASE}")
+                    set(GIT_VERSION_PRERELEASE_NUMBER "")
+                endif()
+            else()
+                set(GIT_VERSION_PRERELEASE "")
+                set(GIT_VERSION_PRERELEASE_TYPE "")
+                set(GIT_VERSION_PRERELEASE_NUMBER "")
+            endif()
         else()
             set(GIT_VERSION_MAJOR "0")
             set(GIT_VERSION_MINOR "0")
             set(GIT_VERSION_PATCH "0")
+            set(GIT_VERSION_PRERELEASE "")
+            set(GIT_VERSION_PRERELEASE_TYPE "")
+            set(GIT_VERSION_PRERELEASE_NUMBER "")
         endif()
     else()
         # Fallback values if git is not found
@@ -150,6 +175,9 @@ function(get_git_version_info)
         set(GIT_DESCRIBE_HASH "unknown")
         set(GIT_IS_DIRTY "0")
         set(GIT_DIRTY_SUFFIX "")
+        set(GIT_VERSION_PRERELEASE "")
+        set(GIT_VERSION_PRERELEASE_TYPE "")
+        set(GIT_VERSION_PRERELEASE_NUMBER "")
     endif()
 
     # Set variables in parent scope
@@ -169,6 +197,9 @@ function(get_git_version_info)
     set(GIT_DESCRIBE_HASH ${GIT_DESCRIBE_HASH} PARENT_SCOPE)
     set(GIT_IS_DIRTY ${GIT_IS_DIRTY} PARENT_SCOPE)
     set(GIT_DIRTY_SUFFIX ${GIT_DIRTY_SUFFIX} PARENT_SCOPE)
+    set(GIT_VERSION_PRERELEASE ${GIT_VERSION_PRERELEASE} PARENT_SCOPE)
+    set(GIT_VERSION_PRERELEASE_TYPE ${GIT_VERSION_PRERELEASE_TYPE} PARENT_SCOPE)
+    set(GIT_VERSION_PRERELEASE_NUMBER ${GIT_VERSION_PRERELEASE_NUMBER} PARENT_SCOPE)
 endfunction()
 
 function(generate_git_version)

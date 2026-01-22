@@ -8,6 +8,11 @@ inline constexpr int MAJOR = @GIT_VERSION_MAJOR@;
 inline constexpr int MINOR = @GIT_VERSION_MINOR@;
 inline constexpr int PATCH = @GIT_VERSION_PATCH@;
 
+// Pre-release information (empty string if not a pre-release)
+inline constexpr const char *PRERELEASE = "@GIT_VERSION_PRERELEASE@";
+inline constexpr const char *PRERELEASE_TYPE = "@GIT_VERSION_PRERELEASE_TYPE@";
+inline constexpr const char *PRERELEASE_NUMBER = "@GIT_VERSION_PRERELEASE_NUMBER@";
+
 // Version string
 inline constexpr const char *VERSION = "@GIT_DESCRIBE@";
 

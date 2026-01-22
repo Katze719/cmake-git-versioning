@@ -143,9 +143,23 @@ configure_file(
 - `GIT_IS_DIRTY` - "true" if working directory has uncommitted changes, "false"
   otherwise
 - `GIT_DIRTY_SUFFIX` - "-dirty" if dirty, empty string otherwise
+- `GIT_VERSION_PRERELEASE` - Pre-release identifier (e.g., "alpha.1", "beta.2",
+  "rc.1") or empty string
+- `GIT_VERSION_PRERELEASE_TYPE` - Pre-release type (e.g., "alpha", "beta", "rc")
+  or empty string
+- `GIT_VERSION_PRERELEASE_NUMBER` - Pre-release number (e.g., "1", "2") or empty
+  string
 
 Note: `generate_git_version()` automatically calls `get_git_version_info()`, so
 the variables are available after calling either function.
+
+**Supported Tag Formats:**
+
+- `v1.2.3` - Standard version
+- `v1.2.3-alpha.1` - Pre-release version
+- `v1.2.3-beta.2` - Pre-release version
+- `v1.2.3-rc.1` - Release candidate
+- `1.2.3-alpha.1` - Without 'v' prefix
 
 ## Generated Information
 
@@ -178,6 +192,12 @@ the variables are available after calling either function.
 
 - `version::MAJOR`, `version::MINOR`, `version::PATCH` - Version numbers as
   `inline constexpr int`
+- `version::PRERELEASE` - Pre-release identifier (e.g., "alpha.1", "beta.2") or
+  empty string
+- `version::PRERELEASE_TYPE` - Pre-release type (e.g., "alpha", "beta", "rc") or
+  empty string
+- `version::PRERELEASE_NUMBER` - Pre-release number (e.g., "1", "2") or empty
+  string
 - `version::VERSION` - Full version string (e.g., "v1.2.3" or
   "v1.2.3-5-gabc1234")
 - `version::GIT_COMMIT_HASH_SHORT` - Short commit hash
@@ -204,6 +224,12 @@ the variables are available after calling either function.
 
 - `VERSION_MAJOR`, `VERSION_MINOR`, `VERSION_PATCH` - Version numbers as
   `#define`
+- `VERSION_PRERELEASE` - Pre-release identifier (e.g., "alpha.1", "beta.2") or
+  empty string
+- `VERSION_PRERELEASE_TYPE` - Pre-release type (e.g., "alpha", "beta", "rc") or
+  empty string
+- `VERSION_PRERELEASE_NUMBER` - Pre-release number (e.g., "1", "2") or empty
+  string
 - `VERSION_STRING` - Full version string
 - `GIT_COMMIT_HASH_SHORT` - Short commit hash
 - `GIT_COMMIT_HASH_FULL` - Full commit hash
