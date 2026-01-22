@@ -10,14 +10,29 @@ inline constexpr int MAJOR = @GIT_VERSION_MAJOR@;
 inline constexpr int MINOR = @GIT_VERSION_MINOR@;
 inline constexpr int PATCH = @GIT_VERSION_PATCH@;
 
+// Pre-release information (empty string if not a pre-release)
+inline constexpr const char *PRERELEASE = "@GIT_VERSION_PRERELEASE@";
+inline constexpr const char *PRERELEASE_TYPE = "@GIT_VERSION_PRERELEASE_TYPE@";
+inline constexpr const char *PRERELEASE_NUMBER =
+    "@GIT_VERSION_PRERELEASE_NUMBER@";
+
 // Version string
 inline constexpr const char *VERSION = "@GIT_DESCRIBE@";
+inline constexpr const char *VERSION_NO_V = "@GIT_DESCRIBE_NO_V@";
 
 // Git information
 inline constexpr const char *GIT_COMMIT_HASH_SHORT = "@GIT_COMMIT_HASH_SHORT@";
 inline constexpr const char *GIT_COMMIT_HASH_FULL = "@GIT_COMMIT_HASH_FULL@";
 inline constexpr const char *GIT_BRANCH = "@GIT_BRANCH@";
 inline constexpr const char *GIT_COMMIT_DATE = "@GIT_COMMIT_DATE@";
+
+// Git describe components
+inline constexpr const char *GIT_TAG = "@GIT_TAG@";
+inline constexpr const char *GIT_TAG_NO_V = "@GIT_TAG_NO_V@";
+inline constexpr int GIT_COMMIT_COUNT = @GIT_COMMIT_COUNT@;
+inline constexpr const char *GIT_DESCRIBE_HASH = "@GIT_DESCRIBE_HASH@";
+inline constexpr bool GIT_IS_DIRTY = @GIT_IS_DIRTY@;
+inline constexpr const char *GIT_DIRTY_SUFFIX = "@GIT_DIRTY_SUFFIX@";
 
 // Helper function to get version string
 inline std::string getVersionString() { return std::string(VERSION); }
@@ -28,6 +43,17 @@ inline std::string getFullVersionInfo() {
          std::to_string(MINOR) + "." + std::to_string(PATCH) + " (" +
          std::string(GIT_BRANCH) + "@" + std::string(GIT_COMMIT_HASH_SHORT) +
          ")";
+}
+
+// Helper function to build git describe string from components
+inline std::string buildGitDescribe() {
+  std::string result = std::string(GIT_TAG);
+  if (GIT_COMMIT_COUNT > 0) {
+    result += "-" + std::to_string(GIT_COMMIT_COUNT) + "-g" +
+              std::string(GIT_DESCRIBE_HASH);
+  }
+  result += std::string(GIT_DIRTY_SUFFIX);
+  return result;
 }
 } // namespace version
 
