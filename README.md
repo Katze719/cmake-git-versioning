@@ -130,14 +130,13 @@ configure_file(
 - `GIT_VERSION_MINOR` - Minor version number
 - `GIT_VERSION_PATCH` - Patch version number
 - `GIT_DESCRIBE` - Full version string from git describe
+- `GIT_DESCRIBE_NO_V` - Full git describe string without 'v' prefix
 - `GIT_COMMIT_HASH_SHORT` - Short commit hash
 - `GIT_COMMIT_HASH_FULL` - Full commit hash
 - `GIT_BRANCH` - Current branch name
 - `GIT_COMMIT_DATE` - Commit date
-- `GIT_TAG` - Latest tag (with 'v' prefix if present)
+- `GIT_TAG` - Latest tag from git describe (with 'v' prefix if present)
 - `GIT_TAG_NO_V` - Latest tag without 'v' prefix
-- `GIT_DESCRIBE_TAG` - Tag from git describe (with 'v' prefix if present)
-- `GIT_DESCRIBE_TAG_NO_V` - Tag from git describe without 'v' prefix
 - `GIT_COMMIT_COUNT` - Number of commits since the tag (0 if on tag)
 - `GIT_DESCRIBE_HASH` - Commit hash from git describe
 - `GIT_IS_DIRTY` - "true" if working directory has uncommitted changes, "false"
@@ -173,11 +172,9 @@ the variables are available after calling either function.
 - `version::GIT_COMMIT_HASH_FULL` - Full commit hash
 - `version::GIT_BRANCH` - Current branch name
 - `version::GIT_COMMIT_DATE` - Commit date
-- `version::GIT_TAG` - Latest tag (with 'v' prefix if present)
+- `version::GIT_TAG` - Latest tag from git describe (with 'v' prefix if present)
 - `version::GIT_TAG_NO_V` - Latest tag without 'v' prefix
-- `version::GIT_DESCRIBE_TAG` - Tag from git describe (with 'v' prefix if
-  present)
-- `version::GIT_DESCRIBE_TAG_NO_V` - Tag from git describe without 'v' prefix
+- `version::VERSION_NO_V` - Full git describe string without 'v' prefix
 - `version::GIT_COMMIT_COUNT` - Number of commits since the tag (0 if on tag)
 - `version::GIT_DESCRIBE_HASH` - Commit hash from git describe
 - `version::GIT_IS_DIRTY` - `true` if working directory has uncommitted changes,
@@ -200,15 +197,13 @@ the variables are available after calling either function.
   string
 - `version::VERSION` - Full version string (e.g., "v1.2.3" or
   "v1.2.3-5-gabc1234")
+- `version::VERSION_NO_V` - Full git describe string without 'v' prefix
 - `version::GIT_COMMIT_HASH_SHORT` - Short commit hash
 - `version::GIT_COMMIT_HASH_FULL` - Full commit hash
 - `version::GIT_BRANCH` - Current branch name
 - `version::GIT_COMMIT_DATE` - Commit date
-- `version::GIT_TAG` - Latest tag (with 'v' prefix if present)
+- `version::GIT_TAG` - Latest tag from git describe (with 'v' prefix if present)
 - `version::GIT_TAG_NO_V` - Latest tag without 'v' prefix
-- `version::GIT_DESCRIBE_TAG` - Tag from git describe (with 'v' prefix if
-  present)
-- `version::GIT_DESCRIBE_TAG_NO_V` - Tag from git describe without 'v' prefix
 - `version::GIT_COMMIT_COUNT` - Number of commits since the tag (0 if on tag)
 - `version::GIT_DESCRIBE_HASH` - Commit hash from git describe
 - `version::GIT_IS_DIRTY` - `true` if working directory has uncommitted changes,
@@ -235,10 +230,9 @@ the variables are available after calling either function.
 - `GIT_COMMIT_HASH_FULL` - Full commit hash
 - `GIT_BRANCH` - Current branch name
 - `GIT_COMMIT_DATE` - Commit date
-- `GIT_TAG` - Latest tag (with 'v' prefix if present)
+- `GIT_TAG` - Latest tag from git describe (with 'v' prefix if present)
 - `GIT_TAG_NO_V` - Latest tag without 'v' prefix
-- `GIT_DESCRIBE_TAG` - Tag from git describe (with 'v' prefix if present)
-- `GIT_DESCRIBE_TAG_NO_V` - Tag from git describe without 'v' prefix
+- `VERSION_STRING_NO_V` - Full git describe string without 'v' prefix
 - `GIT_COMMIT_COUNT` - Number of commits since the tag (0 if on tag)
 - `GIT_DESCRIBE_HASH` - Commit hash from git describe
 - `GIT_IS_DIRTY` - 1 if working directory has uncommitted changes, 0 otherwise

@@ -38,18 +38,6 @@ function(get_git_version_info)
             ERROR_QUIET
         )
 
-        # Get the latest tag
-        execute_process(
-            COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=0
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-            OUTPUT_VARIABLE GIT_TAG
-            OUTPUT_STRIP_TRAILING_WHITESPACE
-            ERROR_QUIET
-        )
-        if(NOT GIT_TAG)
-            set(GIT_TAG "unknown")
-        endif()
-
         # Check if working directory is dirty
         execute_process(
             COMMAND ${GIT_EXECUTABLE} diff --quiet
@@ -85,10 +73,10 @@ function(get_git_version_info)
             set(GIT_COMMIT_COUNT "${CMAKE_MATCH_1}")
             set(GIT_DESCRIBE_HASH "${CMAKE_MATCH_2}")
             # Remove the -count-g-hash part to get the tag
-            string(REGEX REPLACE "-[0-9]+-g[a-f0-9]+$" "" GIT_DESCRIBE_TAG "${GIT_DESCRIBE_CLEAN}")
+            string(REGEX REPLACE "-[0-9]+-g[a-f0-9]+$" "" GIT_TAG "${GIT_DESCRIBE_CLEAN}")
         else()
             # No commit count, just the tag
-            set(GIT_DESCRIBE_TAG "${GIT_DESCRIBE_CLEAN}")
+            set(GIT_TAG "${GIT_DESCRIBE_CLEAN}")
             set(GIT_COMMIT_COUNT "0")
             set(GIT_DESCRIBE_HASH "${GIT_COMMIT_HASH_SHORT}")
         endif()
@@ -100,11 +88,11 @@ function(get_git_version_info)
             set(GIT_TAG_NO_V "${GIT_TAG}")
         endif()
 
-        # Also remove 'v' from describe tag if present
-        if(GIT_DESCRIBE_TAG MATCHES "^v(.+)$")
-            set(GIT_DESCRIBE_TAG_NO_V "${CMAKE_MATCH_1}")
+        # Also create GIT_DESCRIBE_NO_V (the full describe string without 'v' prefix)
+        if(GIT_DESCRIBE MATCHES "^v(.+)$")
+            set(GIT_DESCRIBE_NO_V "${CMAKE_MATCH_1}")
         else()
-            set(GIT_DESCRIBE_TAG_NO_V "${GIT_DESCRIBE_TAG}")
+            set(GIT_DESCRIBE_NO_V "${GIT_DESCRIBE}")
         endif()
 
         # Get git branch name
@@ -125,13 +113,9 @@ function(get_git_version_info)
             ERROR_QUIET
         )
 
-        # Try to extract version from git describe tag or tag
+        # Try to extract version from git tag
         # Support formats: v1.2.3, v1.2.3-alpha.1, v1.2.3-beta.2, v1.2.3-rc.1, etc.
-        # First try from GIT_DESCRIBE_TAG (which may include pre-release), then from GIT_TAG_NO_V
-        set(VERSION_SOURCE "${GIT_DESCRIBE_TAG_NO_V}")
-        if(NOT VERSION_SOURCE OR VERSION_SOURCE STREQUAL "unknown")
-            set(VERSION_SOURCE "${GIT_TAG_NO_V}")
-        endif()
+        set(VERSION_SOURCE "${GIT_TAG_NO_V}")
 
         # Pattern: v?1.2.3 or v?1.2.3-alpha.1 or v?1.2.3-beta.2, etc.
         # The pre-release part can contain letters, numbers, dots, and hyphens
@@ -175,8 +159,7 @@ function(get_git_version_info)
         set(GIT_VERSION_PATCH "0")
         set(GIT_TAG "unknown")
         set(GIT_TAG_NO_V "unknown")
-        set(GIT_DESCRIBE_TAG "unknown")
-        set(GIT_DESCRIBE_TAG_NO_V "unknown")
+        set(GIT_DESCRIBE_NO_V "unknown")
         set(GIT_COMMIT_COUNT "0")
         set(GIT_DESCRIBE_HASH "unknown")
         set(GIT_IS_DIRTY "0")
@@ -184,6 +167,8 @@ function(get_git_version_info)
         set(GIT_VERSION_PRERELEASE "")
         set(GIT_VERSION_PRERELEASE_TYPE "")
         set(GIT_VERSION_PRERELEASE_NUMBER "")
+        set(GIT_TAG "unknown")
+        set(GIT_TAG_NO_V "unknown")
     endif()
 
     # Set variables in parent scope
@@ -191,14 +176,13 @@ function(get_git_version_info)
     set(GIT_VERSION_MINOR ${GIT_VERSION_MINOR} PARENT_SCOPE)
     set(GIT_VERSION_PATCH ${GIT_VERSION_PATCH} PARENT_SCOPE)
     set(GIT_DESCRIBE ${GIT_DESCRIBE} PARENT_SCOPE)
+    set(GIT_DESCRIBE_NO_V ${GIT_DESCRIBE_NO_V} PARENT_SCOPE)
     set(GIT_COMMIT_HASH_SHORT ${GIT_COMMIT_HASH_SHORT} PARENT_SCOPE)
     set(GIT_COMMIT_HASH_FULL ${GIT_COMMIT_HASH_FULL} PARENT_SCOPE)
     set(GIT_BRANCH ${GIT_BRANCH} PARENT_SCOPE)
     set(GIT_COMMIT_DATE ${GIT_COMMIT_DATE} PARENT_SCOPE)
     set(GIT_TAG ${GIT_TAG} PARENT_SCOPE)
     set(GIT_TAG_NO_V ${GIT_TAG_NO_V} PARENT_SCOPE)
-    set(GIT_DESCRIBE_TAG ${GIT_DESCRIBE_TAG} PARENT_SCOPE)
-    set(GIT_DESCRIBE_TAG_NO_V ${GIT_DESCRIBE_TAG_NO_V} PARENT_SCOPE)
     set(GIT_COMMIT_COUNT ${GIT_COMMIT_COUNT} PARENT_SCOPE)
     set(GIT_DESCRIBE_HASH ${GIT_DESCRIBE_HASH} PARENT_SCOPE)
     set(GIT_IS_DIRTY ${GIT_IS_DIRTY} PARENT_SCOPE)
