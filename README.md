@@ -9,7 +9,7 @@ and C projects.
 - Support for C++ headers (`version.hpp`), C++20 modules (`version.cppm`), and C
   (`version.h`)
 - Easy integration via CPM (CMake Package Manager)
-- Extracts: Version, Commit Hash, Branch, Commit Date
+- Extracts: Version, Pre-release information, Commit Hash, Branch, Commit Date
 
 ## Installation via CPM
 
