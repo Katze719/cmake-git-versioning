@@ -20,6 +20,16 @@ extern "C" {
 #define GIT_BRANCH "@GIT_BRANCH@"
 #define GIT_COMMIT_DATE "@GIT_COMMIT_DATE@"
 
+// Git describe components
+#define GIT_TAG "@GIT_TAG@"
+#define GIT_TAG_NO_V "@GIT_TAG_NO_V@"
+#define GIT_DESCRIBE_TAG "@GIT_DESCRIBE_TAG@"
+#define GIT_DESCRIBE_TAG_NO_V "@GIT_DESCRIBE_TAG_NO_V@"
+#define GIT_COMMIT_COUNT @GIT_COMMIT_COUNT@
+#define GIT_DESCRIBE_HASH "@GIT_DESCRIBE_HASH@"
+#define GIT_IS_DIRTY @GIT_IS_DIRTY@
+#define GIT_DIRTY_SUFFIX "@GIT_DIRTY_SUFFIX@"
+
 #ifdef __cplusplus
 }
 #endif
