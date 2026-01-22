@@ -68,21 +68,27 @@ function(get_git_version_info)
         # Extract components from git describe
         # Format: v1.2.3, v1.2.3-alpha.1, v1.2.3-5-gabc1234, v1.2.3-alpha.1-5-gabc1234-dirty
         # Pattern: tag (optional: -commitcount-g-hash) (optional: -dirty)
-        if(GIT_DESCRIBE MATCHES "^(.+?)(-([0-9]+)-g([a-f0-9]+))?(-dirty)?$")
-            set(GIT_DESCRIBE_TAG "${CMAKE_MATCH_1}")
-            if(CMAKE_MATCH_3)
-                set(GIT_COMMIT_COUNT "${CMAKE_MATCH_3}")
-            else()
-                set(GIT_COMMIT_COUNT "0")
-            endif()
-            if(CMAKE_MATCH_4)
-                set(GIT_DESCRIBE_HASH "${CMAKE_MATCH_4}")
-            else()
-                set(GIT_DESCRIBE_HASH "${GIT_COMMIT_HASH_SHORT}")
-            endif()
+        # First check if it ends with -dirty
+        string(REGEX MATCH "-dirty$" DIRTY_MATCH "${GIT_DESCRIBE}")
+        if(DIRTY_MATCH)
+            string(REGEX REPLACE "-dirty$" "" GIT_DESCRIBE_CLEAN "${GIT_DESCRIBE}")
         else()
-            # Fallback if pattern doesn't match
-            set(GIT_DESCRIBE_TAG "${GIT_DESCRIBE}")
+            set(GIT_DESCRIBE_CLEAN "${GIT_DESCRIBE}")
+        endif()
+
+        # Now extract tag and commit info
+        # Pattern: tag-commitcount-g-hash or just tag
+        # Use a more specific pattern to avoid greedy matching issues
+        # Match from the end: -number-g-hash pattern
+        if(GIT_DESCRIBE_CLEAN MATCHES "-([0-9]+)-g([a-f0-9]+)$")
+            # Extract the commit count and hash
+            set(GIT_COMMIT_COUNT "${CMAKE_MATCH_1}")
+            set(GIT_DESCRIBE_HASH "${CMAKE_MATCH_2}")
+            # Remove the -count-g-hash part to get the tag
+            string(REGEX REPLACE "-[0-9]+-g[a-f0-9]+$" "" GIT_DESCRIBE_TAG "${GIT_DESCRIBE_CLEAN}")
+        else()
+            # No commit count, just the tag
+            set(GIT_DESCRIBE_TAG "${GIT_DESCRIBE_CLEAN}")
             set(GIT_COMMIT_COUNT "0")
             set(GIT_DESCRIBE_HASH "${GIT_COMMIT_HASH_SHORT}")
         endif()
